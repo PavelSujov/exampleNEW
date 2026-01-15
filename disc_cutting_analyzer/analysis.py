@@ -38,6 +38,56 @@ def filter_data(
     return filtered_data
 
 
+def _convert_numeric_columns(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    """
+    Convert specified columns to numeric, handling non-numeric values.
+
+    Args:
+        df (pd.DataFrame): Input DataFrame
+        columns (List[str]): List of column names to convert
+
+    Returns:
+        pd.DataFrame: DataFrame with converted columns
+    """
+    df_copy = df.copy()
+    for col in columns:
+        if col in df_copy.columns:
+            df_copy[col] = pd.to_numeric(df_copy[col], errors="coerce")
+    return df_copy
+
+
+def _calculate_material_averages(material_data: pd.DataFrame) -> Dict[str, float]:
+    """
+    Calculate average statistics for a specific material.
+
+    Args:
+        material_data (pd.DataFrame): DataFrame containing data for a single material
+
+    Returns:
+        Dict[str, float]: Dictionary containing average statistics for the material
+    """
+    # Define column mappings for better readability
+    metric_columns = {
+        "Количество": len(material_data),
+        "Средняя толщина пластины (мкм)": "Толщина пластины, мкм",
+        "Средние сколы (лицевая сторона, мкм)": "Сколы лицевая сторона (медиана), мкм",
+        "Средние сколы (обратная сторона, мкм)": "Сколы обратная сторона (медиана), мкм",
+        "Средняя производительность (шт/час)": "Производительность, шт/час",
+        "Средний срок службы диска (резов)": "Срок службы диска, резов",
+        "Средняя скорость подачи (мм/с)": "Скорость подачи, мм/с",
+        "Средняя частота оборотов шпинделя (об/мин)": "Частота оборотов шпинделя, об/мин",
+    }
+
+    averages = {"Количество": metric_columns["Количество"]}
+
+    # Calculate means for all numeric metrics
+    for metric_name, column_name in metric_columns.items():
+        if metric_name != "Количество" and column_name in material_data.columns:
+            averages[metric_name] = material_data[column_name].mean()
+
+    return averages
+
+
 def get_material_statistics(data: pd.DataFrame) -> Dict[str, Dict[str, float]]:
     """
     Calculate statistics for each material in the dataset.
@@ -48,53 +98,35 @@ def get_material_statistics(data: pd.DataFrame) -> Dict[str, Dict[str, float]]:
     Returns:
         Dict[str, Dict[str, float]]: Statistics for each material
     """
-    stats = {}
+    if data.empty:
+        return {}
 
-    for material in data["Материал пластины"].unique():
-        material_data = data[data["Материал пластины"] == material]
+    # Define numeric columns that need to be converted
+    numeric_columns = [
+        "Толщина пластины, мкм",
+        "Сколы лицевая сторона (медиана), мкм",
+        "Сколы обратная сторона (медиана), мкм",
+        "Производительность, шт/час",
+        "Срок службы диска, резов",
+        "Скорость подачи, мм/с",
+        "Частота оборотов шпинделя, об/мин",
+    ]
 
-        # Convert relevant columns to numeric, handling non-numeric values
-        numeric_cols = [
-            "Толщина пластины, мкм",
-            "Сколы лицевая сторона (медиана), мкм",
-            "Сколы обратная сторона (медиана), мкм",
-            "Производительность, шт/час",
-            "Срок службы диска, резов",
-            "Скорость подачи, мм/с",
-            "Частота оборотов шпинделя, об/мин",
+    # Pre-convert all numeric columns to optimize performance
+    processed_data = _convert_numeric_columns(data, numeric_columns)
+
+    # Get unique materials
+    unique_materials = processed_data["Материал пластины"].dropna().unique()
+
+    # Calculate statistics for each material
+    material_stats = {}
+    for material in unique_materials:
+        material_subset = processed_data[
+            processed_data["Материал пластины"] == material
         ]
+        material_stats[material] = _calculate_material_averages(material_subset)
 
-        for col in numeric_cols:
-            if col in material_data.columns:
-                material_data = material_data.copy()  # Explicitly work on a copy
-                material_data[col] = pd.to_numeric(material_data[col], errors="coerce")
-
-        stats[material] = {
-            "Количество": len(material_data),
-            "Средняя толщина пластины (мкм)": material_data[
-                "Толщина пластины, мкм"
-            ].mean(),
-            "Средние сколы (лицевая сторона, мкм)": material_data[
-                "Сколы лицевая сторона (медиана), мкм"
-            ].mean(),
-            "Средние сколы (обратная сторона, мкм)": material_data[
-                "Сколы обратная сторона (медиана), мкм"
-            ].mean(),
-            "Средняя производительность (шт/час)": material_data[
-                "Производительность, шт/час"
-            ].mean(),
-            "Средний срок службы диска (резов)": material_data[
-                "Срок службы диска, резов"
-            ].mean(),
-            "Средняя скорость подачи (мм/с)": material_data[
-                "Скорость подачи, мм/с"
-            ].mean(),
-            "Средняя частота оборотов шпинделя (об/мин)": material_data[
-                "Частота оборотов шпинделя, об/мин"
-            ].mean(),
-        }
-
-    return stats
+    return material_stats
 
 
 def get_cut_type_analysis(data: pd.DataFrame) -> Dict[str, Dict[str, float]]:
@@ -107,49 +139,33 @@ def get_cut_type_analysis(data: pd.DataFrame) -> Dict[str, Dict[str, float]]:
     Returns:
         Dict[str, Dict[str, float]]: Analysis for each cut type
     """
-    analysis = {}
+    if data.empty:
+        return {}
 
-    for cut_type in data["Тип резки"].unique():
-        cut_data = data[data["Тип резки"] == cut_type]
+    # Define numeric columns that need to be converted
+    numeric_columns = [
+        "Толщина пластины, мкм",
+        "Сколы лицевая сторона (медиана), мкм",
+        "Сколы обратная сторона (медиана), мкм",
+        "Производительность, шт/час",
+        "Срок службы диска, резов",
+        "Скорость подачи, мм/с",
+        "Частота оборотов шпинделя, об/мин",
+    ]
 
-        # Convert relevant columns to numeric, handling non-numeric values
-        numeric_cols = [
-            "Толщина пластины, мкм",
-            "Сколы лицевая сторона (медиана), мкм",
-            "Сколы обратная сторона (медиана), мкм",
-            "Производительность, шт/час",
-            "Срок службы диска, резов",
-            "Скорость подачи, мм/с",
-            "Частота оборотов шпинделя, об/мин",
-        ]
+    # Pre-convert all numeric columns to optimize performance
+    processed_data = _convert_numeric_columns(data, numeric_columns)
 
-        for col in numeric_cols:
-            if col in cut_data.columns:
-                cut_data = cut_data.copy()  # Explicitly work on a copy
-                cut_data[col] = pd.to_numeric(cut_data[col], errors="coerce")
+    # Get unique cut types
+    unique_cut_types = processed_data["Тип резки"].dropna().unique()
 
-        analysis[cut_type] = {
-            "Количество": len(cut_data),
-            "Средняя толщина пластины (мкм)": cut_data["Толщина пластины, мкм"].mean(),
-            "Средние сколы (лицевая сторона, мкм)": cut_data[
-                "Сколы лицевая сторона (медиана), мкм"
-            ].mean(),
-            "Средние сколы (обратная сторона, мкм)": cut_data[
-                "Сколы обратная сторона (медиана), мкм"
-            ].mean(),
-            "Средняя производительность (шт/час)": cut_data[
-                "Производительность, шт/час"
-            ].mean(),
-            "Средний срок службы диска (резов)": cut_data[
-                "Срок службы диска, резов"
-            ].mean(),
-            "Средняя скорость подачи (мм/с)": cut_data["Скорость подачи, мм/с"].mean(),
-            "Средняя частота оборотов шпинделя (об/мин)": cut_data[
-                "Частота оборотов шпинделя, об/мин"
-            ].mean(),
-        }
+    # Calculate statistics for each cut type
+    cut_type_stats = {}
+    for cut_type in unique_cut_types:
+        cut_type_subset = processed_data[processed_data["Тип резки"] == cut_type]
+        cut_type_stats[cut_type] = _calculate_material_averages(cut_type_subset)
 
-    return analysis
+    return cut_type_stats
 
 
 def get_thickness_ranges(data: pd.DataFrame) -> List[Tuple[float, float]]:
