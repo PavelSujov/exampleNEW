@@ -1,100 +1,53 @@
-# Интерактивная база данных дисковой резки полупроводниковых пластин
+# Interactive Database for Semiconductor Wafer Cutting Discs Analysis
 
-Это приложение Streamlit позволяет анализировать и визуализировать данные о процессе резки полупроводниковых пластин с использованием отрезных дисков.
+## English Version
 
-## Запуск приложения
+This Streamlit-based application provides an interactive interface for analyzing and visualizing data related to semiconductor wafer cutting using precision cutting discs. The application allows engineers and technicians to analyze cutting parameters, optimize processes, and make data-driven decisions to improve manufacturing efficiency.
 
-### Требования
-- Python 3.14
-- Виртуальное окружение (установлено в папке `venv` внутри директории exampleNEW)
+### Live Application
+Access the live application at: [https://examplenew.streamlit.app/](https://examplenew.streamlit.app/)
 
-### Установка зависимостей
-```bash
-# Активация виртуального окружения
-# На Windows:
-venv\Scripts\activate
+### Functional Capabilities
+- **Data Filtering**: Interactive filters for materials, cut types, thickness ranges, and kerf width ranges
+- **Visual Analytics**: Interactive plots showing relationships between cutting parameters and performance metrics
+- **Article Decoding**: Tool to decode disc article numbers and retrieve specific parameter information
+- **Performance Analysis**: Metrics for chipping, performance rates, and disc lifespan
+- **Parameter Optimization**: Recommendations for optimal cutting settings based on material properties
+- **Custom Database Upload**: Users can upload their own database files for analysis
 
-# Установка зависимостей
-pip install -r requirements.txt
-```
+### Technological Significance
+The application leverages modern data science techniques to transform raw cutting process data into actionable insights. By using pandas for data manipulation and Plotly for interactive visualizations, it provides a sophisticated analytical platform that enables engineers to identify patterns, correlations, and optimization opportunities in the wafer cutting process.
 
-### Запуск приложения
-```bash
-# Перейдите в директорию exampleNEW:
-cd "c:\Users\Pavel Sukhov\Desktop\DevelopNEW\exampleNEW"
+### Economic Impact
+- **Process Optimization**: Reduces material waste by identifying optimal cutting parameters
+- **Equipment Efficiency**: Extends disc lifespan through better parameter selection
+- **Quality Control**: Minimizes chipping and defects, reducing rejection rates
+- **Cost Reduction**: Improves overall manufacturing efficiency and reduces operational costs
+- **Decision Support**: Enables evidence-based decisions for process improvements
 
-# Активация виртуального окружения
-venv\Scripts\activate
+---
 
-# Запуск Streamlit приложения
-python -m streamlit run app.py
-```
+## Русская версия
 
-Альтернативно, можно использовать предоставленный скрипт запуска:
-```bash
-# На Windows:
-run_app.bat
-```
+Это приложение на основе Streamlit предоставляет интерактивный интерфейс для анализа и визуализации данных, связанных с резкой полупроводниковых пластин с использованием прецизионных режущих дисков. Приложение позволяет инженерам и техникам анализировать параметры резки, оптимизировать процессы и принимать решения на основе данных для повышения эффективности производства.
 
-Или использовать универсальный скрипт запуска:
-```bash
-launch_app.bat
-```
+### Онлайн-приложение
+Доступ к онлайн-приложению: [https://examplenew.streamlit.app/](https://examplenew.streamlit.app/)
 
-После запуска приложение будет доступно в браузере по адресу: http://localhost:8501 (или другому порту, если 8501 занят)
+### Функциональные возможности
+- **Фильтрация данных**: Интерактивные фильтры для материалов, типов резки, диапазонов толщины и ширины реза
+- **Визуальная аналитика**: Интерактивные графики, показывающие взаимосвязи между параметрами резки и показателями производительности
+- **Декодирование артикулов**: Инструмент для декодирования номеров артикулов дисков и получения информации о конкретных параметрах
+- **Анализ производительности**: Метрики для сколов, показателей производительности и срока службы дисков
+- **Оптимизация параметров**: Рекомендации по оптимальным параметрам резки на основе свойств материала
+- **Загрузка пользовательской базы данных**: Пользователи могут загружать свои собственные файлы базы данных для анализа
 
-## Функциональность
+### Технологическое значение
+Приложение использует современные методы науки о данных для преобразования исходных данных о процессе резки в действенные выводы. Используя pandas для манипуляции данными и Plotly для интерактивных визуализаций, оно предоставляет сложную аналитическую платформу, которая позволяет инженерам выявлять закономерности, корреляции и возможности оптимизации в процессе резки пластин.
 
-### Основные возможности
-- Загрузка данных из базы "База данных. Диски ADT пополнение.xlsx"
-- Возможность загрузки пользовательской базы данных через интерфейс
-- Интерактивные фильтры для:
-  - Выбора материалов пластин
-  - Выбора типов резки
-  - Диапазона толщин пластин (с шагом 25 мкм)
-  - Диапазона ширины реза (с шагом 5 мкм)
-
-### Визуализации
-- Графики сколов (лицевая и обратная стороны)
-- Графики производительности и срока службы дисков
-- Графики параметров процесса (ширина реза, скорость подачи, частота оборотов)
-- Графики параметров дисков (размер алмазного зерна, концентрация алмаза)
-
-### Дополнительные функции
-- Виджет декодирования артикула диска
-- Кнопка "Заказать" в виджете декодирования
-- Таблица отфильтрованных данных с возможностью скачивания
-- Статистика по материалам и типам резки
-- Ключевые метрики (средние значения сколов, производительности, срока службы дисков)
-
-## Структура проекта
-
-```
-disc_cutting_analyzer/
-├── data_loader.py      # Загрузка и кэширование данных
-├── decrypting.py       # Декодирование артикулов дисков
-├── plotting.py         # Создание графиков
-├── analysis.py         # Функции анализа данных
-└── __init__.py         # Инициализация модуля
-app.py                  # Главный файл приложения
-run_app.bat             # Скрипт запуска для Windows
-requirements.txt        # Зависимости
-```
-
-## Использование пользовательской базы данных
-
-1. Подготовьте Excel файл (XLSX) с тем же форматом, что и исходная база данных
-2. Каждый лист Excel файла будет интерпретироваться как отдельный материал
-3. В интерфейсе приложения используйте кнопку "Загрузите свою базу данных (XLSX)" для загрузки собственных данных
-4. Все функции приложения будут работать с загруженной базой данных
-
-## Формат артикула диска
-
-Артикулы дисков имеют формат: `00757-GCTT-EEE-HXX`
-- `00757` - префикс
-- `G` - размер алмазного зерна
-- `C` - концентрация алмаза (%)
-- `TT` - толщина лезвия
-- `EEE` - вылет лезвия
-- `H` - твердость связки
-- `XX` - постоянная величина
+### Экономическое влияние
+- **Оптимизация процессов**: Снижает отходы материалов за счет выявления оптимальных параметров резки
+- **Эффективность оборудования**: Увеличивает срок службы дисков за счет лучшего выбора параметров
+- **Контроль качества**: Минимизирует сколы и дефекты, снижая процент брака
+- **Снижение затрат**: Повышает общую эффективность производства и снижает эксплуатационные расходы
+- **Поддержка принятия решений**: Обеспечивает принятие решений на основе данных для улучшения процессов
