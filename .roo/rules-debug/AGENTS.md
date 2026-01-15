@@ -1,10 +1,11 @@
 # Project Debug Rules (Non-Obvious Only)
 
-## Virtual Environment
-- Always ensure the virtual environment is activated before debugging: `venv\Scripts\activate`
-- Python interpreter should be set to the one in the venv directory
-- Debug console may need specific PYTHONPATH settings to recognize project modules
+## Virtual Environment Issues
+- Watch for Unicode/Cyrillic character encoding issues in file paths
+- When running pytest, ensure working directory is exampleNEW/ to avoid path issues
+- Virtual environment must be activated in the correct directory to access project modules
 
-## Data Files
-- Excel files in DevelopNEW data/ directory may require specific libraries like pandas and openpyxl
-- Jupyter notebooks may need special kernel configuration to work with the virtual environment
+## Data Processing Debugging
+- Check for NaN values in numeric calculations using pd.to_numeric(..., errors="coerce")
+- Verify that Russian column names are properly handled in pandas operations
+- Look for SettingWithCopyWarning when modifying DataFrame copies

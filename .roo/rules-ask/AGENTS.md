@@ -1,10 +1,11 @@
 # Project Documentation Rules (Non-Obvious Only)
 
 ## Project Context
-- This project is focused on developing an interactive technical database/configurator for cutting discs for semiconductor plates
-- The exampleNEW/ directory contains reference implementation that should be consulted when answering questions about intended functionality
-- Data files in DevelopNEW data/ directory are central to the application's purpose
+- This is a semiconductor wafer cutting disc analysis application with interactive visualization
+- Russian-language column names in data files are intentional (not encoding errors)
+- Excel files contain critical domain-specific data for disc cutting parameters
 
 ## File Organization
-- The project follows a pattern where example implementation is separate from main development area
-- Excel and Jupyter notebook files in DevelopNEW data/ contain important domain-specific information
+- Data files in DevelopNEW data/ use Russian column names that must be referenced exactly
+- The application allows users to upload custom databases with the same structure
+- Kerf width slider has 5 μm step for precision control (not the default 25 μm)
