@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  streamlit-app:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./DevelopNEW data:/app/DevelopNEW data
+    environment:
+      - PYTHONPATH=/app
+    restart: unless-stopped
