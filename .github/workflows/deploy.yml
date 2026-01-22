@@ -27,6 +27,7 @@ jobs:
     - name: Run tests
       run: |
         python -m pytest test_analysis.py -v
+        echo "Tests completed successfully"
 
   build-and-deploy:
     needs: test
